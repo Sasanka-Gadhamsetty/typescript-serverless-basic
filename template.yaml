@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Timeout: 30
+    MemorySize: 128
+Resources:
+  GetVehicleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/api/getVehicleHandler.handler
+      CodeUri: .
+      Events:
+        GetVehicle:
+          Type: Api
+          Properties:
+            Path: /vehicle
+            Method: GET
+
+  CreateVehicleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/api/createHandler.createHandler
+      CodeUri: .
+      Events:
+        CreateVehicle:
+          Type: Api
+          Properties:
+            Path: /vehicle
+            Method: POST
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  GetVehicleFunctionArn:
+    Description: ARN of the Get Vehicle Lambda function
+    Value: !GetAtt GetVehicleFunction.Arn
+
+  CreateVehicleFunctionArn:
+    Description: ARN of the Create Vehicle Lambda function
+    Value: !GetAtt CreateVehicleFunction.Arn
